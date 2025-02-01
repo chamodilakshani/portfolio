@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"/>
+    <title>Chamodi Lakshani</title>
+</head>
+<body>
+    <div class="first">
+        <header>
+            <a href="#" class="logo">Portfolio</a>
+            <nav class="navbar">
+
+                <nav class="navbar">
+                    <a href="#" class="active">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="project.html">Project</a>
+                    <a href="contact.html">Contact</a>
+                </nav>
+            </nav>
+        </header>
+
+        <section class="home">
+            <div class="home-detail">
+                <h1>K.Chamodi Lakshani</h1>
+                <h2>University Student</h2>
+                <p>As a dedicated student at Gampaha Wickramaarachchi University of Indigenous Medicine, I am currently Following Bachelor of Health Science Honors in Health Information and Communication Technology Degree Programm, focusing on Information technology in Health Industry. </p>
+
+           
+                <div class="download-social">
+                <a href="#" class="btn">Download_CV</a>
+                <div class="social-icons">
+                    <a href="<i class="ri-whatsapp-fill"></i>"></a>
+                    <a href="<i class="ri-facebook-box-fill"></i>"></a>
+                    <a href="<i class="ri-instagram-fill"></i>"></a>
+                    <a href="<i class="ri-linkedin-box-line"></i>"></a>
+                    
+                    
+                    
+                </div>
+            </div>
+        </div>
+            <div class="home-img">
+                <div class="img box">
+                    <img src="image.png" width="390px" height="400px" >
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+body{
+    height: 100vh;
+    background: url(bgfile.jpeg) no-repeat center / cover;
+    padding: 30px;
+}
+
+.first{
+    position: relative;
+    height: 100%;
+    background-color: rgb(156, 58, 58);
+    border-radius: 30px;
+    width: 100%;
+
+}
+header{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 90%;
+    padding: 25px 5%;
+    display: flex;
+    justify-content:space-between ;
+    align-items: center;
+    z-index: 100;
+
+}
+
+.logo{
+    font-size: 25px;
+    color: aliceblue;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.navbar a{
+    font-size: 18px;
+    color: aliceblue;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+    border-bottom: 2px solid transparent;
+    transition: .5s;
+
+}
+
+.navbar a:hover,
+.navbar a.active {
+    border-color: #fff;
+}
+
+.home{
+    display:flex;
+    align-items: center;
+    height: 100%;
+    gap: 50px;
+    padding: 50px 5% 0;
+    color: #fff;
+}
+
+.home-detail h1{
+    font-size: 55px;
+    line-height: 1;
+}
+
+.home-detail h2{
+    font-size: 32px;
+
+}
+.home-detail p{
+    margin: 10px 0 20px;
+
+}
+.home-detail .download-social {
+    display: flex;
+    align-items:center ;
+}
+
+.btn{
+    display:inline-block;
+    padding: 15px 30px;
+    background: #fff;
+    border: px solid #fff;
+    border-radius: 40px;
+    box-shadow: 0 0 30px #fff;
+    color:#333 ;
+    text-decoration: none;
+    font-weight:500;
+    transition: .5s;
+    text-align: center;
+
+}
+.btn:hover{
+    background: transparent;
+    box-shadow: none;
+    color: #fff;
+}
+.home-detail .social-icons{
+    margin-left: 20px;
+
+}
+
+ .social-icons a {
+    display:inline-flex;
+    padding: 4px;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    font-size: 20px;
+    color: #fff;
+    text-decoration:double;
+    margin:  4px;
+    transition: .5s;
+
+
+}
+
+.social-icons a:hover{
+    background: #fff;
+    box-shadow: 0 0 10px #fff;
+    color: #333;
+}
+.home-img .img-box{
+    position: relative;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 20px #fff;   
+}
+.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Chamodi Lakshani</title>
+</head>
+<body>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Chamodi Lakshani</title>
+</head>
+<body>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Chamodi Lakshani</title>
+</head>
+<body>
+</body>
+</html>
