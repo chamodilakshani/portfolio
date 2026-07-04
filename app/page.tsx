@@ -67,13 +67,13 @@ const ROLES = [
   "Problem Solver",
 ];
 
-type Category = "Web Apps" | "E-Commerce" | "Security";
-const CATEGORIES: Category[] = ["Web Apps", "E-Commerce", "Security"];
+type Category = "Web Apps" | "E-Commerce" | "Health Informatics" |  "Other";
+const CATEGORIES: Category[] = ["Web Apps", "E-Commerce", "Health Informatics","Other"];
 
 type Project = {
   id: string;
   category: Category;
-  accent: "blue" | "green" | "violet";
+  accent: "blue" | "green" | "violet" | "orange";
   monogram: string;
   title: string;
   tagline: string;
@@ -92,70 +92,85 @@ const ACCENTS: Record<Project["accent"], { fg: string; bg: string; tint: string;
   blue: { fg: "#2F6FED", bg: "#2F6FED", tint: "#E7F0FF", border: "#C7DBFF" },
   green: { fg: "#0E9F70", bg: "#14B981", tint: "#E3FBF1", border: "#BAEBD8" },
   violet: { fg: "#6357DB", bg: "#7C6FEF", tint: "#EDEBFF", border: "#D6D2FB" },
+  orange: { fg: "#F97316", bg: "#F97316", tint: "#FED7D7", border: "#FEB2B2" },
 };
 
 const PROJECTS: Project[] = [
   {
-    id: "codeplay",
-    category: "Web Apps",
-    accent: "blue",
-    monogram: "</>",
-    title: "CodePlay",
-    tagline: "Teaches kids to code through short, gamified challenges.",
-    description:
-      "An interactive platform that turns programming lessons into structured, bite-sized challenges with visible progress — built so kids build momentum instead of hitting a wall of syntax on day one. I designed and built the product end to end, from the database schema to the session logic to the dashboard a student sees when they log back in.",
-    role: "Full-stack developer — schema, API, and UI",
-    features: [
-      "Interactive lessons broken into short, structured challenges",
-      "Progress-tracking dashboard with visible milestones",
-      "JWT-based session handling for signed-in learners",
-    ],
-    stack: ["React.js", "Node.js", "Express.js", "MongoDB", "JWT"],
-    achievement:
-      "Exhibited live at MINISCOPE 2026 — an IT & Biomedical Innovation Exhibition — presented to industry judges and visitors.",
-    image: "/codeplay.jpg",
-    github: "https://github.com/yourusername/codeplay",
-    demo: "https://codeplay-demo.vercel.app",
-  },
+  id: "hospital-facility-management",
+  category: "Health Informatics",
+  accent: "orange",
+  monogram: "HF",
+  title: "Hospital Facility Management System",
+  tagline: "Kamburupitiya Base Hospital",
+  description:
+    "A comprehensive hospital facility management system developed to streamline healthcare operations by managing departments, medical equipment, room availability, maintenance requests, and staff resources. The platform improves operational efficiency through a secure, user-friendly interface while supporting effective healthcare facility administration.",
+  highlights: [
+    "Facility & room management",
+    "Equipment tracking",
+    "Maintenance request system",
+    "Healthcare administration"
+  ],
+  image: "/FMSystem.jfif",
+  github: "https://github.com/chamodilakshani/hospital-facility-management",
+},
   {
-    id: "learntrack",
-    category: "Web Apps",
-    accent: "green",
-    monogram: "LT",
-    title: "LearnTrack Pro",
-    tagline: "A learning management system built around a calendar.",
-    description:
-      "A modern LMS with a built-in calendar system and a student dashboard, designed for a clean, distraction-free view of upcoming coursework rather than a buried list of assignments. The interface prioritises what's due next and keeps everything else out of the way.",
-    highlights: ["Student dashboard", "Built-in calendar", "Coursework tracking"],
-    image: "/projects/learntrack.png",
-  },
+  id: "codeplay",
+  category: "Web Apps",
+  accent: "blue",
+  monogram: "CP",
+  title: "CodePlay",
+  tagline: "An interactive coding platform that makes programming fun for children.",
+  description:
+    "CodePlay is a full-stack educational web platform designed to introduce children to programming through interactive lessons, coding games, and hands-on challenges. Built with Next.js, TypeScript, Clerk Authentication, PostgreSQL, and Neon, the platform provides a secure, engaging, and responsive learning environment that encourages creativity and problem-solving.",
+  highlights: [
+    "Interactive coding games",
+    "Secure Clerk authentication",
+    "PostgreSQL + Neon database",
+    "Responsive learning platform"
+  ],
+  image: "/codeplay.png",
+  github: "https://github.com/chamodilakshani/codeplay",
+  demo: "https://codeplay-demo.vercel.app",
+},
+ {
+  id: "meeya-engineering",
+  category: "Web Apps",
+  accent: "green",
+  monogram: "ME",
+  title: "Meeya Engineering",
+  tagline: "A modern heavy machinery repair and service management platform.",
+  description:
+    "A responsive business website developed for Meeya Engineering to modernize its online presence. The platform enables customers to explore heavy machinery repair services, book appointments online, and connect with the company through an intuitive interface. Built with a bold industrial design focused on performance, reliability, and accessibility.",
+  highlights: [
+    "Online appointment booking",
+    "Service management",
+    "Responsive industrial UI"
+  ],
+  image: "/meeya-engineering.png",
+  github: "https://github.com/chamodilakshani/meeya-engineering",
+  demo: "https://meeya-engineering.vercel.app",
+},
   {
-    id: "mobile-store",
-    category: "E-Commerce",
-    accent: "violet",
-    monogram: "MA",
-    title: "Mobile Accessories Store",
-    tagline: "An e-commerce catalog built to feel fast on any screen.",
-    description:
-      "An e-commerce site with a full product catalog and shopping layout, built so browsing stays quick and legible whether it's opened on a phone in a shop aisle or a desktop at home. The layout was the focus: predictable grids, clear pricing, and minimal friction between browsing and checkout.",
-    highlights: ["Full product catalog", "Responsive layout", "Shopping flow"],
-    image: "/gizmo.jpeg",
-  },
-  {
-    id: "secure-login",
-    category: "Security",
-    accent: "blue",
-    monogram: "SL",
-    title: "Secure Login System",
-    tagline: "Backend authentication, built from the ground up.",
-    description:
-      "A backend authentication architecture built with PHP and MySQL, covering registration, session handling, and database integration. No auth-as-a-service — the point of the project was understanding exactly what happens between a submitted password and a valid session.",
-    role: "Backend developer",
-    stack: ["PHP", "MySQL"],
-    highlights: ["Registration", "Session handling", "Database integration"],
-    image: "/projects/secure-login.png",
-    github: "https://github.com/yourusername/secure-login-system",
-  },
+  id: "zara-handmade",
+  category: "E-Commerce",
+  accent: "violet",
+  monogram: "ZH",
+  title: "Zara Handmade",
+  tagline: "A handcrafted products marketplace with a modern shopping experience.",
+  description:
+    "Zara Handmade is a responsive e-commerce website developed to showcase and sell handcrafted products through a clean and elegant user interface. The platform allows customers to browse product collections, explore detailed product pages, and enjoy a seamless shopping experience with a design that reflects the uniqueness of handmade craftsmanship.",
+  highlights: [
+    "Product catalog",
+    "Responsive shopping experience",
+    "Modern UI/UX design",
+    "Mobile-friendly interface"
+  ],
+  image: "/projects/zara-handmade.png",
+  github: "https://github.com/chamodilakshani/zara-handmade",
+  demo: "https://zara-handmade.vercel.app"
+},
+  
 ];
 
 type IconProps = { className?: string };
@@ -525,13 +540,13 @@ function CardImage({ project }: { project: Project }) {
   const showPlaceholder = !project.image || failed;
 
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[22px]">
+    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[22px] border-b border-slate-200/70 bg-[linear-gradient(145deg,#f8fbff_0%,#eef5ff_100%)]">
       {!showPlaceholder && (
         <Image
           src={project.image as string}
           alt={`${project.title} — project screenshot`}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-contain p-2 transition-transform duration-500 group-hover:scale-105 sm:p-3"
           sizes="(min-width: 1024px) 23vw, (min-width: 640px) 45vw, 90vw"
           onError={() => setFailed(true)}
         />
