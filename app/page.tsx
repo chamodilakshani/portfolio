@@ -169,8 +169,7 @@ const PROJECTS: Project[] = [
   image: "/zarahandmade.png",
   github: "https://github.com/chamodilakshani/ZaraHandmade/",
  
-  
-];
+}];
 
 type IconProps = { className?: string };
 
