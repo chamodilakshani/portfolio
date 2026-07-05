@@ -131,7 +131,7 @@ const PROJECTS: Project[] = [
   ],
   image: "/codeplay.png",
 
-  demo: "codey-next-three.vercel.app",
+  
 },
  {
   id: "meeya-engineering",
@@ -149,7 +149,7 @@ const PROJECTS: Project[] = [
   ],
   image: "/meeya-engineering.png",
   github: "https://github.com/chamodilakshani/engineering_company",
-  demo: "meeyaengineering.vercel.app",
+  
 },
   {
   id: "zara-handmade",
@@ -168,8 +168,7 @@ const PROJECTS: Project[] = [
   ],
   image: "/zarahandmade.png",
   github: "https://github.com/chamodilakshani/ZaraHandmade/",
-  demo: "zarahandmadee-commerce.vercel.app"
-},
+ 
   
 ];
 
