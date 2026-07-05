@@ -130,8 +130,8 @@ const PROJECTS: Project[] = [
     "Responsive learning platform"
   ],
   image: "/codeplay.png",
-  github: "https://github.com/chamodilakshani/codeplay",
-  demo: "https://codeplay-demo.vercel.app",
+
+  demo: "codey-next-three.vercel.app",
 },
  {
   id: "meeya-engineering",
@@ -148,8 +148,8 @@ const PROJECTS: Project[] = [
     "Responsive industrial UI"
   ],
   image: "/meeya-engineering.png",
-  github: "https://github.com/chamodilakshani/meeya-engineering",
-  demo: "https://meeya-engineering.vercel.app",
+  github: "https://github.com/chamodilakshani/engineering_company",
+  demo: "meeyaengineering.vercel.app",
 },
   {
   id: "zara-handmade",
@@ -166,9 +166,9 @@ const PROJECTS: Project[] = [
     "Modern UI/UX design",
     "Mobile-friendly interface"
   ],
-  image: "/projects/zara-handmade.png",
-  github: "https://github.com/chamodilakshani/zara-handmade",
-  demo: "https://zara-handmade.vercel.app"
+  image: "/zarahandmade.png",
+  github: "https://github.com/chamodilakshani/ZaraHandmade/",
+  demo: "zarahandmadee-commerce.vercel.app"
 },
   
 ];
@@ -258,6 +258,8 @@ function PulseIcon({ className = "h-4 w-4" }: IconProps) {
 
 type EducationEntry = {
   title: string;
+  code: string;
+  status: "ongoing" | "completed";
   primary?: boolean;
   subtitle?: string;
   institution?: string;
@@ -269,6 +271,8 @@ type EducationEntry = {
 const EDUCATION: EducationEntry[] = [
   {
     title: "Bachelor of Health Science (Honours)",
+    code: "BHSc",
+    status: "ongoing",
     primary: true,
     subtitle: "Health Information & Communication Technology",
     institution: "Gampaha Wickramaarachchi University of Indigenous Medicine",
@@ -277,6 +281,10 @@ const EDUCATION: EducationEntry[] = [
   },
   {
     title: "Diploma in Graphic Design",
+    code: "Design",
+    status: "completed",
+    primary: true,
+    institution: "Sipway Campus",
     period: "2021 — 2022",
     description:
       "Branding, typography, and Adobe Photoshop & Illustrator — the foundation for a design-first approach to development.",
@@ -284,54 +292,94 @@ const EDUCATION: EducationEntry[] = [
   },
   {
     title: "Diploma in English",
+    code: "English",
+    status: "completed",
+    primary: true,
+    institution: "Britishway English Academy",
     period: "2020 — 2021",
     description: "Applied written and spoken communication, refined for professional and client-facing work.",
     icon: BookIcon,
   },
   {
     title: "Certificate in Full Stack Web Development",
+    code: "FSW",
+    status: "completed",
+    primary: true,
+    institution: "Skyrek Academy",
     period: "2024",
-    description: "End-to-end web fundamentals — from database design to deployed, working interfaces.",
+    description: "MERN stack development, responsive design, and modern web architecture.",
     icon: CodeTagIcon,
   },
 ];
 
 type SkillLevel = { name: string; level: number };
 
-const SKILL_RINGS: { label: string; value: number; color: string; description: string }[] = [
-  { label: "Frontend", value: 86, color: "#2F6FED", description: "React, Tailwind, and building interfaces that feel fast and clear." },
-  { label: "Backend", value: 76, color: "#14B981", description: "APIs, auth, and databases that hold up past the demo." },
-  { label: "UI / UX", value: 82, color: "#7C6FEF", description: "Design-first thinking, carried over from a graphic design background." },
-  { label: "DevOps", value: 62, color: "#F0A63A", description: "Docker, Git workflows, and shipping consistently across environments." },
-];
+type SkillChannel = {
+  id: string;
+  label: string;
+  color: string;
+  description: string;
+  skills: SkillLevel[];
+};
 
-const SKILL_PANELS: { name: string; color: string; tint: string; skills: SkillLevel[] }[] = [
+const SKILL_CHANNELS: SkillChannel[] = [
   {
-    name: "Languages & Frontend",
+    id: "frontend",
+    label: "Frontend",
     color: "#2F6FED",
-    tint: "#E7F0FF",
+    description: "React, Tailwind, and building interfaces that feel fast and clear.",
     skills: [
       { name: "JavaScript", level: 85 },
-      { name: "React.js", level: 82 },
+      { name: "React.js / Next.js", level: 82 },
       { name: "Tailwind CSS", level: 88 },
       { name: "HTML5 & CSS3", level: 92 },
-      { name: "PHP", level: 68 },
-      { name: "Figma", level: 78 },
     ],
   },
   {
-    name: "Backend & Tools",
+    id: "backend",
+    label: "Backend",
     color: "#14B981",
-    tint: "#E3FBF1",
+    description: "APIs, auth, and databases that hold up past the demo.",
     skills: [
       { name: "Node.js / Express", level: 78 },
       { name: "REST APIs", level: 80 },
-      { name: "MongoDB / MySQL", level: 76 },
-      { name: "Docker", level: 65 },
+      { name: "MongoDB / MySQL / PostgreSQL", level: 76 },
+      { name: "PHP", level: 68 },
+    ],
+  },
+  {
+    id: "uiux",
+    label: "UI / UX",
+    color: "#7C6FEF",
+    description: "Design-first thinking, carried over from a graphic design background.",
+    skills: [
+      { name: "Figma", level: 78 },
+      { name: "Design systems", level: 74 },
+      { name: "Prototyping", level: 72 },
+    ],
+  },
+  {
+    id: "devops",
+    label: "DevOps",
+    color: "#F0A63A",
+    description: "Docker, Git workflows, and shipping consistently across environments.",
+    skills: [
       { name: "Git & GitHub", level: 85 },
+      { name: "Docker", level: 65 },
+      { name: "Clerk / Auth providers", level: 70 },
     ],
   },
 ];
+
+function channelAverage(channel: SkillChannel) {
+  return Math.round(channel.skills.reduce((sum, s) => sum + s.level, 0) / channel.skills.length);
+}
+
+/** Small ECG-style sparkline whose peak height scales with the skill level. */
+function pulsePath(level: number) {
+  const peak = 4 + (level / 100) * 15;
+  return `M0,20 L34,20 L39,${20 - peak} L44,${20 + peak * 0.7} L49,20 L128,20`;
+}
 
 /* ------------------------------------------------------------------ */
 /*  HOOKS                                                               */
@@ -500,7 +548,19 @@ function IconLink({ href, label, children }: { href: string; label: string; chil
 /*  TILT CARD — 3D hover tilt used by project cards                    */
 /* ------------------------------------------------------------------ */
 
-function TiltCard({ children, className, style, onClick }: { children: ReactNode; className?: string; style?: React.CSSProperties; onClick?: () => void }) {
+function TiltCard({
+  children,
+  className,
+  style,
+  onClick,
+  baseRotate = "0deg",
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+  onClick?: () => void;
+  baseRotate?: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -509,11 +569,11 @@ function TiltCard({ children, className, style, onClick }: { children: ReactNode
     const rect = el.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
-    el.style.transform = `perspective(1000px) rotateX(${(-y * 7).toFixed(2)}deg) rotateY(${(x * 7).toFixed(2)}deg) translateY(-6px) scale(1.015)`;
+    el.style.transform = `perspective(1000px) rotateX(${(-y * 7).toFixed(2)}deg) rotateY(${(x * 7).toFixed(2)}deg) translateY(-6px) scale(1.015) rotate(0deg)`;
   };
   const onLeave = () => {
     const el = ref.current;
-    if (el) el.style.transform = "perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)";
+    if (el) el.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1) rotate(${baseRotate})`;
   };
 
   return (
@@ -522,7 +582,7 @@ function TiltCard({ children, className, style, onClick }: { children: ReactNode
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       onClick={onClick}
-      style={{ transition: "transform 0.25s ease-out", transformStyle: "preserve-3d", ...style }}
+      style={{ transition: "transform 0.25s ease-out", transformStyle: "preserve-3d", transform: `rotate(${baseRotate})`, ...style }}
       className={className}
     >
       {children}
@@ -568,25 +628,50 @@ function CardImage({ project }: { project: Project }) {
   );
 }
 
+function StatusStamp({ live }: { live: boolean }) {
+  return (
+    <span
+      className="stamp pointer-events-none absolute right-4 top-4 z-[2] rounded-md border-2 px-2.5 py-1 font-[family-name:var(--font-mono)] text-[0.62rem] font-black uppercase tracking-[0.12em]"
+      style={{
+        color: live ? "#0E9F70" : "#8A94A6",
+        borderColor: live ? "#0E9F70" : "#8A94A6",
+        transform: "rotate(-9deg)",
+        mixBlendMode: "multiply",
+      }}
+    >
+      {live ? "Live" : "Case Closed"}
+    </span>
+  );
+}
+
 function ProjectCard({ project, onOpen, index }: { project: Project; onOpen: (p: Project) => void; index: number }) {
   const a = ACCENTS[project.accent];
+  const tilt = index % 3 === 0 ? "-0.8deg" : index % 3 === 1 ? "0.9deg" : "-0.4deg";
   return (
     <TiltCard
       className="group relative"
       style={{ animationDelay: `${index * 90}ms` }}
+      baseRotate={tilt}
       onClick={() => onOpen(project)}
     >
       <div
         data-reveal
         style={{ transitionDelay: `${index * 80}ms` }}
-        className="glass-card relative flex cursor-pointer flex-col overflow-hidden rounded-[22px] border bg-white/70 text-left shadow-[0_8px_30px_-18px_rgba(15,23,42,0.25)] backdrop-blur-xl"
+        className="case-card glass-card relative flex cursor-pointer flex-col overflow-hidden rounded-[22px] border bg-white/70 text-left shadow-[0_8px_30px_-18px_rgba(15,23,42,0.25)] backdrop-blur-xl"
       >
+        <span className="pin" style={{ background: a.bg }} />
         <div className="glow-border" style={{ ["--glow" as string]: a.fg }} />
+        <StatusStamp live={Boolean(project.demo)} />
         <CardImage project={project} />
         <div className="flex flex-1 flex-col gap-2 px-5 py-4">
           <h3 className="font-[family-name:var(--font-display)] text-[1.05rem] font-bold leading-tight text-[#0B1220]">
             {project.title}
           </h3>
+
+          <svg className="h-3 w-full max-w-[90px] text-[color:var(--pulse-color)]" style={{ ["--pulse-color" as string]: a.fg }} viewBox="0 0 90 14" fill="none">
+            <path d="M0 7H22L27 2L32 12L37 7H90" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.55" />
+          </svg>
+
           <p className="text-[0.82rem] leading-relaxed text-[#5B6B7B]">{project.tagline}</p>
           <div className="mt-2 flex items-center justify-between">
             <div className="flex flex-wrap gap-1.5">
@@ -738,74 +823,112 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 /*  SKILLS — circular rings + lab-style bars                            */
 /* ------------------------------------------------------------------ */
 
-function CircularSkill({ label, value, color, description }: { label: string; value: number; color: string; description: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setVisible(true);
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.4 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  const r = 42;
-  const c = 2 * Math.PI * r;
-  const offset = c - (visible ? value / 100 : 0) * c;
-
+function SkillSparkline({ skill, color, delay }: { skill: SkillLevel; color: string; delay: number }) {
   return (
-    <div ref={ref} className="group relative flex flex-col items-center gap-3">
-      <div className="relative h-[108px] w-[108px]">
-        <svg viewBox="0 0 104 104" className="h-full w-full -rotate-90">
-          <circle cx="52" cy="52" r={r} fill="none" stroke="rgba(15,23,42,0.08)" strokeWidth="8" />
-          <circle
-            cx="52"
-            cy="52"
-            r={r}
-            fill="none"
-            stroke={color}
-            strokeWidth="8"
-            strokeLinecap="round"
-            strokeDasharray={c}
-            strokeDashoffset={offset}
-            style={{ transition: "stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)" }}
-          />
-        </svg>
-        <span className="absolute inset-0 flex items-center justify-center font-[family-name:var(--font-mono)] text-[0.95rem] font-bold" style={{ color }}>
-          {visible ? value : 0}%
-        </span>
-      </div>
-      <span className="text-[0.85rem] font-semibold text-[#0B1220]">{label}</span>
-
-      <div className="tooltip pointer-events-none absolute -top-2 left-1/2 w-52 -translate-x-1/2 -translate-y-full rounded-xl border border-white/70 bg-white/95 p-3 text-center text-[0.72rem] leading-relaxed text-[#5B6B7B] opacity-0 shadow-xl backdrop-blur transition-all duration-300 group-hover:-translate-y-[112%] group-hover:opacity-100">
-        {description}
-      </div>
+    <div className="skill-spark flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3" style={{ animationDelay: `${delay}ms` }}>
+      <svg viewBox="0 0 128 40" className="h-8 w-24 flex-shrink-0" preserveAspectRatio="none">
+        <path
+          d={pulsePath(skill.level)}
+          fill="none"
+          stroke={color}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          pathLength={100}
+          className="spark-path"
+          style={{ ["--spark-delay" as string]: `${delay}ms` }}
+        />
+      </svg>
+      <span className="flex-1 text-[0.82rem] font-semibold text-white/85">{skill.name}</span>
+      <span className="font-[family-name:var(--font-mono)] text-[0.72rem] font-bold" style={{ color }}>
+        {skill.level}%
+      </span>
     </div>
   );
 }
 
-function SkillReading({ skill, color }: { skill: SkillLevel; color: string }) {
+function VitalsMonitor() {
+  const [active, setActive] = useState(0);
+  const tabRefs = useRef<Record<number, HTMLButtonElement | null>>({});
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const [tabUnderline, setTabUnderline] = useState({ left: 0, width: 0 });
+  const channel = SKILL_CHANNELS[active];
+  const avg = channelAverage(channel);
+
+  useEffect(() => {
+    const el = tabRefs.current[active];
+    const parent = tabListRef.current;
+    if (el && parent) {
+      const elRect = el.getBoundingClientRect();
+      const parentRect = parent.getBoundingClientRect();
+      setTabUnderline({ left: elRect.left - parentRect.left, width: elRect.width });
+    }
+  }, [active]);
+
   return (
-    <div>
-      <div className="mb-1 flex items-center justify-between">
-        <span className="text-[0.82rem] font-semibold text-[#33414F]">{skill.name}</span>
-        <span className="font-[family-name:var(--font-mono)] text-[0.64rem] font-bold" style={{ color }}>
-          {skill.level}%
+    <div className="monitor-bezel relative overflow-hidden rounded-[28px] border border-white/10 bg-[#0B1220] p-5 shadow-[0_30px_60px_-30px_rgba(11,18,32,0.6)] sm:p-7">
+      {/* Header strip */}
+      <div className="mb-5 flex items-center justify-between">
+        <span className="flex items-center gap-2 font-[family-name:var(--font-mono)] text-[0.68rem] font-bold uppercase tracking-[0.14em] text-white/50">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-70" style={{ background: channel.color }} />
+            <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: channel.color }} />
+          </span>
+          Live skill monitor
         </span>
+        <span className="font-[family-name:var(--font-mono)] text-[0.68rem] font-bold text-white/40">CH.0{active + 1}</span>
       </div>
-      <div className="h-[6px] w-full overflow-hidden rounded-full bg-[rgba(15,23,42,0.06)]">
-        <div data-reveal className="skill-fill h-full rounded-full" style={{ background: `linear-gradient(90deg, ${color}, #14B981)`, ["--fill" as string]: `${skill.level}%` }} />
+
+      {/* Screen */}
+      <div className="monitor-screen relative mb-6 h-[160px] w-full overflow-hidden rounded-2xl border border-white/10">
+        <div className="scan-grid absolute inset-0" />
+        <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+          <path
+            key={channel.id}
+            d="M0,60 L60,60 L72,20 L84,100 L96,60 L180,60 L192,34 L204,86 L216,60 L400,60"
+            fill="none"
+            stroke={channel.color}
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray="14 8"
+            pathLength={100}
+            className="monitor-wave flow-line"
+            style={{ ["--wave-color" as string]: channel.color }}
+          />
+        </svg>
+        <div className="absolute right-4 top-4 text-right">
+          <span className="block font-[family-name:var(--font-mono)] text-[1.9rem] font-bold leading-none" style={{ color: channel.color }}>
+            {avg}
+            <span className="text-[0.9rem]">%</span>
+          </span>
+          <span className="font-[family-name:var(--font-mono)] text-[0.6rem] uppercase tracking-wider text-white/40">avg. proficiency</span>
+        </div>
+        <div className="absolute bottom-4 left-4 max-w-[70%] font-[family-name:var(--font-mono)] text-[0.68rem] leading-snug text-white/50">
+          {channel.description}
+        </div>
+      </div>
+
+      {/* Channel tabs */}
+      <div ref={tabListRef} className="relative mb-6 flex flex-wrap gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1.5">
+        <span className="tab-underline" style={{ left: tabUnderline.left, width: tabUnderline.width, background: channel.color }} />
+        {SKILL_CHANNELS.map((c, i) => (
+          <button
+            key={c.id}
+            ref={(el) => { tabRefs.current[i] = el; }}
+            onClick={() => setActive(i)}
+            className={`relative z-10 rounded-full px-4 py-2 font-[family-name:var(--font-mono)] text-[0.7rem] font-bold uppercase tracking-wide transition-colors duration-300 ${active === i ? "text-white" : "text-white/45 hover:text-white/80"}`}
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Individual skill readouts for the active channel */}
+      <div key={channel.id} className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+        {channel.skills.map((s, i) => (
+          <SkillSparkline key={s.name} skill={s} color={channel.color} delay={i * 90} />
+        ))}
       </div>
     </div>
   );
@@ -839,6 +962,100 @@ function FlipPortrait() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  EDUCATION — patient record folder, tabbed instead of a timeline     */
+/* ------------------------------------------------------------------ */
+
+function EducationRecordBoard() {
+  const [active, setActive] = useState(0);
+  const entry = EDUCATION[active];
+
+  return (
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-[200px_1fr]">
+      {/* Folder tabs */}
+      <div className="folder-rail flex gap-2.5 overflow-x-auto pb-2 md:flex-col md:overflow-visible md:pb-0">
+        {EDUCATION.map((e, i) => {
+          const isActive = i === active;
+          return (
+            <button
+              key={e.title}
+              onClick={() => setActive(i)}
+              className={`folder-tab group relative flex flex-shrink-0 items-center gap-2.5 rounded-xl border px-4 py-3 text-left transition-all duration-300 md:flex-shrink md:rounded-l-xl md:rounded-r-none ${
+                isActive
+                  ? "border-transparent bg-white text-[#0B1220] shadow-[0_10px_24px_-12px_rgba(15,23,42,0.35)] md:-translate-x-1 md:pr-6"
+                  : "border-[rgba(15,23,42,0.08)] bg-white/40 text-[#5B6B7B] hover:bg-white/70"
+              }`}
+              style={{ zIndex: isActive ? 2 : 1 }}
+            >
+              <span
+                className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-white"
+                style={{ background: isActive ? (e.primary ? "linear-gradient(135deg,#2F6FED,#14B981)" : "#7C6FEF") : "#B7C0CC" }}
+              >
+                <e.icon className="h-3.5 w-3.5" />
+              </span>
+              <span className="font-[family-name:var(--font-mono)] text-[0.72rem] font-bold uppercase tracking-wide">{e.code}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Active record page */}
+      <div key={active} className="record-page glass-card relative overflow-hidden rounded-2xl border border-white/60 bg-white/70 p-6 backdrop-blur-md sm:p-8">
+        <div className="glow-border" style={{ ["--glow" as string]: entry.primary ? "#2F6FED" : "#7C6FEF" }} />
+
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-[family-name:var(--font-mono)] text-[0.64rem] font-bold uppercase tracking-wider ${
+              entry.status === "ongoing" ? "bg-[#E3FBF1] text-[#0E9F70]" : "bg-[#F1F3F6] text-[#5B6B7B]"
+            }`}
+          >
+            {entry.status === "ongoing" && (
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#14B981] opacity-70" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#14B981]" />
+              </span>
+            )}
+            {entry.status === "ongoing" ? "Ongoing" : "Completed"}
+          </span>
+          <span className="font-[family-name:var(--font-mono)] text-[0.68rem] font-bold text-[#8A94A6]">
+            Record 0{active + 1} / 0{EDUCATION.length} · {entry.period}
+          </span>
+        </div>
+
+        <h3 className="font-[family-name:var(--font-display)] text-xl font-bold text-[#0B1220] sm:text-2xl">{entry.title}</h3>
+        {entry.primary ? (
+          <>
+            <div className="mt-1.5 text-[0.9rem] font-semibold text-[#7C6FEF]">{entry.subtitle}</div>
+            <div className="text-[0.82rem] text-[#5B6B7B]">{entry.institution}</div>
+          </>
+        ) : null}
+
+        {/* Vitals-strip divider — unique to this record */}
+        <svg viewBox="0 0 300 24" preserveAspectRatio="none" className="my-4 h-5 w-full max-w-[220px] text-[#DEE4EC]">
+          <path
+            d="M0,12 L110,12 L120,3 L132,21 L142,12 L300,12"
+            fill="none"
+            stroke="url(#recordFlow)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <defs>
+            <linearGradient id="recordFlow" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#2F6FED" />
+              <stop offset="100%" stopColor="#14B981" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <p className="text-[0.9rem] leading-relaxed text-[#5B6B7B]">
+          {entry.description ?? "Ongoing coursework in health information systems, database design, and applied healthcare technology."}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  PAGE                                                                */
 /* ------------------------------------------------------------------ */
 
@@ -855,6 +1072,7 @@ export default function Home() {
 
   const filterRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const filterListRef = useRef<HTMLDivElement>(null);
+  const projectsGridRef = useRef<HTMLDivElement>(null);
   const [filterUnderline, setFilterUnderline] = useState({ left: 0, width: 0 });
 
   const { text: typedRole, blink } = useTypewriter(ROLES);
@@ -1064,6 +1282,59 @@ export default function Home() {
           transform: rotateY(180deg);
         }
 
+        .record-page { animation: popIn 0.45s cubic-bezier(0.22,1,0.36,1); }
+        .folder-rail::-webkit-scrollbar { height: 4px; }
+        .folder-rail::-webkit-scrollbar-thumb { background: rgba(15,23,42,0.15); border-radius: 9999px; }
+
+        .monitor-screen {
+          background: radial-gradient(ellipse at 30% 20%, rgba(47,111,237,0.12), transparent 60%), #060b12;
+        }
+        .scan-grid {
+          background-image:
+            linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+          background-size: 24px 24px;
+        }
+        .monitor-wave {
+          filter: drop-shadow(0 0 6px var(--wave-color, transparent));
+        }
+        .tab-underline {
+          position: absolute;
+          top: 0; bottom: 0;
+          border-radius: 9999px;
+          transition: left 0.35s cubic-bezier(0.22,1,0.36,1), width 0.35s cubic-bezier(0.22,1,0.36,1), background 0.3s ease;
+          z-index: 0;
+        }
+        @keyframes drawIn {
+          from { stroke-dashoffset: 100; }
+          to { stroke-dashoffset: 0; }
+        }
+        .spark-path {
+          stroke-dasharray: 100;
+          stroke-dashoffset: 100;
+          animation: drawIn 0.9s ease-out forwards;
+          animation-delay: var(--spark-delay, 0ms);
+        }
+        .skill-spark {
+          animation: popIn 0.5s ease-out backwards;
+        }
+
+        .case-card { overflow: visible !important; }
+        .pin {
+          position: absolute;
+          top: -7px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 14px;
+          height: 14px;
+          border-radius: 9999px;
+          box-shadow: 0 3px 6px rgba(15,23,42,0.35), inset 0 -2px 3px rgba(0,0,0,0.25);
+          z-index: 3;
+        }
+        .stamp {
+          animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
         .glass-card {
           transition: box-shadow 0.35s ease, border-color 0.35s ease;
         }
@@ -1107,11 +1378,13 @@ export default function Home() {
 
         @media (prefers-reduced-motion: reduce) {
           [data-reveal], [data-reveal-group] > *, .modal-overlay, .modal-panel,
-          .blob, .particle, .hero-wave-bg, .flow-line, .flip-card-inner {
+          .blob, .particle, .hero-wave-bg, .flow-line, .flip-card-inner,
+          .spark-path, .skill-spark, .stamp, .record-page, .monitor-wave {
             animation: none !important;
             transition: none !important;
             opacity: 1 !important;
             transform: none !important;
+            stroke-dashoffset: 0 !important;
           }
         }
       `}</style>
@@ -1263,7 +1536,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div ref={projectsGridRef} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {visibleProjects.map((p, i) => (
             <ProjectCard key={p.id} project={p} onOpen={handleOpenProject} index={i} />
           ))}
@@ -1277,53 +1550,11 @@ export default function Home() {
         <div data-reveal className="mb-14">
           <span className="mb-2.5 block font-[family-name:var(--font-mono)] text-[0.72rem] font-bold uppercase tracking-[0.14em] text-[#7C6FEF]">Record</span>
           <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight md:text-5xl">Education.</h2>
+          <p className="mt-3 max-w-[54ch] text-[0.95rem] leading-relaxed text-[#5B6B7B]">Browse the record like a patient chart — select a tab to open that entry.</p>
         </div>
 
-        <div className="relative mx-auto max-w-[720px] pl-10">
-          <svg className="absolute bottom-1 left-0 top-1 h-[calc(100%-8px)] w-8" viewBox="0 0 32 100" preserveAspectRatio="none" fill="none">
-            <path d="M16 0 V26 L21 22 L25 34 L19 40 L16 36 V100" stroke="rgba(15,23,42,0.1)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-            <path
-              className="flow-line"
-              d="M16 0 V26 L21 22 L25 34 L19 40 L16 36 V100"
-              stroke="url(#flowGradient)"
-              strokeWidth="2.5"
-              strokeDasharray="14 10"
-              vectorEffect="non-scaling-stroke"
-            />
-            <defs>
-              <linearGradient id="flowGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#2F6FED" />
-                <stop offset="100%" stopColor="#14B981" />
-              </linearGradient>
-            </defs>
-          </svg>
-
-          {EDUCATION.map((e, i) => (
-            <div key={e.title} data-reveal style={{ transitionDelay: `${i * 100}ms` }} className={`relative ${i < EDUCATION.length - 1 ? "pb-9" : ""}`}>
-              <span
-                className="absolute -left-10 top-0.5 flex h-8 w-8 items-center justify-center rounded-full text-white shadow-[0_6px_16px_-4px_rgba(47,111,237,0.5)]"
-                style={{ background: e.primary ? "linear-gradient(135deg,#2F6FED,#14B981)" : "#8A94A6" }}
-              >
-                <e.icon className="h-3.5 w-3.5" />
-              </span>
-
-              <div className="glass-card group rounded-2xl border border-white/60 bg-white/55 p-5 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-white/75">
-                <div className="glow-border" style={{ ["--glow" as string]: e.primary ? "#2F6FED" : "#7C6FEF" }} />
-                <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-                  <h3 className={`font-bold ${e.primary ? "text-lg" : "text-base"}`}>{e.title}</h3>
-                  {e.period && <span className="font-[family-name:var(--font-mono)] text-[0.66rem] font-bold text-[#8A94A6]">{e.period}</span>}
-                </div>
-                {e.primary ? (
-                  <>
-                    <div className="mb-0.5 text-[0.82rem] font-semibold text-[#7C6FEF]">{e.subtitle}</div>
-                    <div className="text-[0.8rem] text-[#5B6B7B]">{e.institution}</div>
-                  </>
-                ) : (
-                  <p className="text-[0.82rem] leading-relaxed text-[#5B6B7B]">{e.description}</p>
-                )}
-              </div>
-            </div>
-          ))}
+        <div data-reveal className="mx-auto max-w-[820px]">
+          <EducationRecordBoard />
         </div>
       </section>
 
@@ -1334,29 +1565,13 @@ export default function Home() {
         <div data-reveal className="mb-14">
           <span className="mb-2.5 block font-[family-name:var(--font-mono)] text-[0.72rem] font-bold uppercase tracking-[0.14em] text-[#14B981]">Diagnostics</span>
           <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight md:text-5xl">Skills.</h2>
+          <p className="mt-3 max-w-[54ch] text-[0.95rem] leading-relaxed text-[#5B6B7B]">
+            Select a channel below to switch readouts — like flipping between leads on a live monitor.
+          </p>
         </div>
 
-        <div data-reveal data-reveal-group className="mb-16 grid grid-cols-2 gap-8 sm:grid-cols-4">
-          {SKILL_RINGS.map((r) => (
-            <CircularSkill key={r.label} {...r} />
-          ))}
-        </div>
-
-        <div data-reveal data-reveal-group className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {SKILL_PANELS.map((panel) => (
-            <div key={panel.name} className="glass-card relative rounded-2xl border border-white/60 bg-white/55 p-6 backdrop-blur-md">
-              <div className="glow-border" style={{ ["--glow" as string]: panel.color }} />
-              <div className="mb-4 flex items-center justify-between">
-                <span className="font-[family-name:var(--font-mono)] text-[0.72rem] font-bold" style={{ color: panel.color }}>{panel.name}</span>
-                <span className="rounded-full px-2.5 py-0.5 font-[family-name:var(--font-mono)] text-[0.62rem] font-bold uppercase tracking-wide" style={{ background: panel.tint, color: panel.color }}>Panel normal</span>
-              </div>
-              <div className="flex flex-col gap-3.5">
-                {panel.skills.map((s) => (
-                  <SkillReading key={s.name} skill={s} color={panel.color} />
-                ))}
-              </div>
-            </div>
-          ))}
+        <div data-reveal className="mx-auto max-w-[820px]">
+          <VitalsMonitor />
         </div>
       </section>
 
