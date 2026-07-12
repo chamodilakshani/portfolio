@@ -1471,7 +1471,7 @@ export default function Home() {
             </p>
 
             <div data-reveal className="mb-9 flex flex-wrap items-center gap-3">
-              <PrimaryButton href="/cv.pdf">Download CV</PrimaryButton>
+              <PrimaryButton href="/chamodilakshanicv.pdf">Download CV</PrimaryButton>
               <SecondaryButton onClick={() => scrollToSection("projects")}>View Projects</SecondaryButton>
             </div>
 
