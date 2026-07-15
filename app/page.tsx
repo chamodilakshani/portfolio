@@ -2,7 +2,6 @@
 
 import {
   useEffect,
-  useMemo,
   useRef,
   useState,
   useCallback,
@@ -68,7 +67,6 @@ const ROLES = [
 ];
 
 type Category = "Web Apps" | "E-Commerce" | "Health Informatics" |  "Other";
-const CATEGORIES: Category[] = ["Web Apps", "E-Commerce", "Health Informatics","Other"];
 
 type Project = {
   id: string;
@@ -111,7 +109,7 @@ const PROJECTS: Project[] = [
     "Maintenance request system",
     "Healthcare administration"
   ],
-  image: "/FMSystem.jfif",
+  image: "/FMSystem.png",
   github: "https://github.com/chamodilakshani/hospital-facility-management",
 },
   {
@@ -169,6 +167,30 @@ const PROJECTS: Project[] = [
   image: "/zarahandmade.png",
   github: "https://github.com/chamodilakshani/ZaraHandmade/",
  
+},
+{
+ 
+  id: "dr-buddy",
+  category: "Health Informatics",
+  accent: "orange",
+  monogram: "DB",
+  title: "Dr. Buddy",
+  tagline: "AI-Powered Medical Report Interpreter",
+  description:
+    "Dr. Buddy is an AI-powered web application that simplifies the interpretation of medical reports. Users can upload a scanned medical report image or paste report text, and the application leverages Google's Gemini Flash model to generate easy-to-understand explanations in both Sinhala and English. It also provides patient-friendly guidance and recommendations, making complex medical information more accessible for everyone.",
+
+  highlights: [
+    "AI-powered medical report analysis",
+    "Upload images or paste report text",
+    "Sinhala & English explanations",
+    "Patient-friendly recommendations"
+  ],
+
+ 
+
+  image: "/drbuddy.png",
+  github: "https://github.com/chamodilakshani/Dr.Buddy",
+  
 }];
 
 type IconProps = { className?: string };
@@ -396,9 +418,11 @@ function useTypewriter(words: string[], typingSpeed = 65, deletingSpeed = 35, pa
       return () => clearTimeout(t);
     }
     if (subIndex === 0 && deleting) {
-      setDeleting(false);
-      setIndex((prev) => (prev + 1) % words.length);
-      return;
+      const t = setTimeout(() => {
+        setDeleting(false);
+        setIndex((prev) => (prev + 1) % words.length);
+      }, 0);
+      return () => clearTimeout(t);
     }
     const t = setTimeout(
       () => setSubIndex((prev) => prev + (deleting ? -1 : 1)),
@@ -543,53 +567,10 @@ function IconLink({ href, label, children }: { href: string; label: string; chil
 }
 
 /* ------------------------------------------------------------------ */
-/*  TILT CARD — 3D hover tilt used by project cards                    */
-/* ------------------------------------------------------------------ */
-
-function TiltCard({
-  children,
-  className,
-  style,
-  onClick,
-  baseRotate = "0deg",
-}: {
-  children: ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-  onClick?: () => void;
-  baseRotate?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const onMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    el.style.transform = `perspective(1000px) rotateX(${(-y * 7).toFixed(2)}deg) rotateY(${(x * 7).toFixed(2)}deg) translateY(-6px) scale(1.015) rotate(0deg)`;
-  };
-  const onLeave = () => {
-    const el = ref.current;
-    if (el) el.style.transform = `perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1) rotate(${baseRotate})`;
-  };
-
-  return (
-    <div
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      onClick={onClick}
-      style={{ transition: "transform 0.25s ease-out", transformStyle: "preserve-3d", transform: `rotate(${baseRotate})`, ...style }}
-      className={className}
-    >
-      {children}
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  PROJECT CARD + MODAL                                                */
+/*  "Case File" cards — each project is a page in a patient-chart       */
+/*  binder. Tapping a card flips it open (like turning a page) to       */
+/*  reveal quick case notes, with a link through to the full record.    */
 /* ------------------------------------------------------------------ */
 
 function CardImage({ project }: { project: Project }) {
@@ -598,7 +579,7 @@ function CardImage({ project }: { project: Project }) {
   const showPlaceholder = !project.image || failed;
 
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[22px] border-b border-slate-200/70 bg-[linear-gradient(145deg,#f8fbff_0%,#eef5ff_100%)]">
+    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-[18px] border-b border-slate-200/70 bg-[linear-gradient(145deg,#f8fbff_0%,#eef5ff_100%)]">
       {!showPlaceholder && (
         <Image
           src={project.image as string}
@@ -642,50 +623,191 @@ function StatusStamp({ live }: { live: boolean }) {
   );
 }
 
-function ProjectCard({ project, onOpen, index }: { project: Project; onOpen: (p: Project) => void; index: number }) {
+function ProjectBookPage({ project, page, total }: { project: Project; page: number; total: number }) {
   const a = ACCENTS[project.accent];
-  const tilt = index % 3 === 0 ? "-0.8deg" : index % 3 === 1 ? "0.9deg" : "-0.4deg";
+  const points = (project.highlights ?? project.stack ?? []).slice(0, 4);
+
   return (
-    <TiltCard
-      className="group relative"
-      style={{ animationDelay: `${index * 90}ms` }}
-      baseRotate={tilt}
-      onClick={() => onOpen(project)}
-    >
-      <div
-        data-reveal
-        style={{ transitionDelay: `${index * 80}ms` }}
-        className="case-card glass-card relative flex cursor-pointer flex-col overflow-hidden rounded-[22px] border bg-white/70 text-left shadow-[0_8px_30px_-18px_rgba(15,23,42,0.25)] backdrop-blur-xl"
-      >
-        <span className="pin" style={{ background: a.bg }} />
-        <div className="glow-border" style={{ ["--glow" as string]: a.fg }} />
-        <StatusStamp live={Boolean(project.demo)} />
-        <CardImage project={project} />
-        <div className="flex flex-1 flex-col gap-2 px-5 py-4">
-          <h3 className="font-[family-name:var(--font-display)] text-[1.05rem] font-bold leading-tight text-[#0B1220]">
-            {project.title}
-          </h3>
-
-          <svg className="h-3 w-full max-w-[90px] text-[color:var(--pulse-color)]" style={{ ["--pulse-color" as string]: a.fg }} viewBox="0 0 90 14" fill="none">
-            <path d="M0 7H22L27 2L32 12L37 7H90" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.55" />
-          </svg>
-
-          <p className="text-[0.82rem] leading-relaxed text-[#5B6B7B]">{project.tagline}</p>
-          <div className="mt-2 flex items-center justify-between">
-            <div className="flex flex-wrap gap-1.5">
-              {(project.stack ?? project.highlights ?? []).slice(0, 2).map((s) => (
-                <span key={s} className="rounded-full px-2 py-0.5 font-[family-name:var(--font-mono)] text-[0.62rem] font-semibold" style={{ background: a.tint, color: a.fg }}>
-                  {s}
-                </span>
-              ))}
-            </div>
-            <svg className="h-4 w-4 flex-shrink-0 text-[#5B6B7B] transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#0B1220]" viewBox="0 0 16 16" fill="none">
-              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+    <div className="book-page-content">
+      <div className="book-page-heading">
+        <span className="font-[family-name:var(--font-mono)] text-[0.65rem] font-bold uppercase tracking-[0.12em]" style={{ color: a.fg }}>{project.category}</span>
+        <span className="font-[family-name:var(--font-mono)] text-[0.65rem] font-bold text-[#8A94A6]">{String(page).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
+      </div>
+      <div className="book-page-body">
+        <div className="book-page-image"><CardImage project={project} /></div>
+        <div className="flex min-w-0 flex-col">
+          <span className="mb-3 font-[family-name:var(--font-mono)] text-[0.64rem] font-bold uppercase tracking-[0.12em] text-[#8A94A6]">Project notes</span>
+          <h3 className="font-[family-name:var(--font-display)] text-2xl font-bold leading-tight text-[#0B1220] sm:text-3xl">{project.title}</h3>
+          <p className="mt-3 text-[0.88rem] font-medium leading-relaxed text-[#33414F]">{project.tagline}</p>
+          <p className="mt-4 text-[0.84rem] leading-relaxed text-[#5B6B7B]">{project.description}</p>
+          <div className="mt-5 grid gap-2 sm:grid-cols-2">
+            {points.map((point) => (
+              <div key={point} className="flex items-center gap-2 border-l-2 py-1 pl-2.5 text-[0.75rem] font-medium text-[#33414F]" style={{ borderColor: a.border }}>
+                <span className="h-1.5 w-1.5 rounded-full" style={{ background: a.bg }} />{point}
+              </div>
+            ))}
           </div>
         </div>
       </div>
-    </TiltCard>
+    </div>
+  );
+}
+
+function ProjectBook({ projects, onOpen }: { projects: Project[]; onOpen: (project: Project) => void }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [turn, setTurn] = useState<{ from: number; to: number; direction: "next" | "previous" } | null>(null);
+  const activeProject = projects[activeIndex];
+  const visibleProject = turn ? projects[turn.to] : activeProject;
+  const a = ACCENTS[visibleProject.accent];
+
+  const changePage = (to: number) => {
+    if (turn || to === activeIndex) return;
+    setTurn({ from: activeIndex, to, direction: to > activeIndex || (activeIndex === projects.length - 1 && to === 0) ? "next" : "previous" });
+  };
+
+  const finishTurn = () => {
+    if (!turn) return;
+    setActiveIndex(turn.to);
+    setTurn(null);
+  };
+
+  const previousPage = () => changePage((activeIndex - 1 + projects.length) % projects.length);
+  const nextPage = () => changePage((activeIndex + 1) % projects.length);
+
+  return (
+    <div data-reveal className="project-book mx-auto max-w-5xl">
+      <div className="project-book-spine" aria-hidden="true" />
+      <div className="project-book-sheet">
+        <ProjectBookPage project={visibleProject} page={(turn ? turn.to : activeIndex) + 1} total={projects.length} />
+        {turn && (
+          <div className={`project-book-turn project-book-turn-${turn.direction}`} onAnimationEnd={finishTurn}>
+            <div className="project-book-turn-face project-book-turn-front">
+              <ProjectBookPage project={projects[turn.from]} page={turn.from + 1} total={projects.length} />
+            </div>
+            <div className="project-book-turn-face project-book-turn-back">
+              <ProjectBookPage project={projects[turn.to]} page={turn.to + 1} total={projects.length} />
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="project-book-controls">
+        <button type="button" className="project-book-control" onClick={previousPage} aria-label="Previous project">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3M3 8L7 4M3 8L7 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <div className="flex items-center gap-1.5">
+          {projects.map((project, index) => <button key={project.id} type="button" className="project-book-marker" onClick={() => changePage(index)} aria-label={`Open ${project.title}`} aria-current={index === activeIndex ? "page" : undefined} style={{ background: index === activeIndex ? a.bg : "rgba(15,23,42,0.18)" }} />)}
+        </div>
+        <button type="button" className="project-book-control" onClick={nextPage} aria-label="Next project">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <button type="button" onClick={() => onOpen(visibleProject)} className="ml-auto rounded-full px-4 py-2.5 font-[family-name:var(--font-mono)] text-[0.7rem] font-bold text-white transition-transform hover:-translate-y-0.5" style={{ background: `linear-gradient(90deg, ${a.fg}, #14B981)` }}>View details</button>
+      </div>
+    </div>
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function FlipProjectCard({ project, onOpen, index }: { project: Project; onOpen: (p: Project) => void; index: number }) {
+  const [flipped, setFlipped] = useState(false);
+  const a = ACCENTS[project.accent];
+  const points = (project.highlights ?? project.stack ?? []).slice(0, 3);
+
+  return (
+    <div
+      data-reveal
+      style={{ animationDelay: `${index * 90}ms`, transitionDelay: `${index * 80}ms` }}
+      className="flip-page-outer relative w-full"
+    >
+      <div className="flip-page-scene">
+        <div className={`flip-page-card ${flipped ? "is-flipped" : ""}`}>
+          {/* FRONT — case file cover */}
+          <button
+            type="button"
+            onClick={() => setFlipped(true)}
+            aria-label={`Open case file: ${project.title}`}
+            className="flip-face flip-face-front glass-card group flex w-full flex-col overflow-hidden rounded-[18px] border border-white/60 bg-white/80 text-left shadow-[0_10px_36px_-18px_rgba(15,23,42,0.3)] backdrop-blur-xl"
+          >
+            <div className="glow-border" style={{ ["--glow" as string]: a.fg }} />
+            <span className="chart-hole" style={{ top: "16%" }} />
+            <span className="chart-hole" style={{ top: "48%" }} />
+            <span className="chart-hole" style={{ top: "80%" }} />
+            <span className="page-curl" />
+            <StatusStamp live={Boolean(project.demo)} />
+            <CardImage project={project} />
+            <div className="flex flex-1 flex-col gap-2 px-5 py-4">
+              <h3 className="font-[family-name:var(--font-display)] text-[1.02rem] font-bold leading-tight text-[#0B1220]">
+                {project.title}
+              </h3>
+
+              <svg className="h-3 w-full max-w-[90px] text-[color:var(--pulse-color)]" style={{ ["--pulse-color" as string]: a.fg }} viewBox="0 0 90 14" fill="none">
+                <path d="M0 7H22L27 2L32 12L37 7H90" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.55" />
+              </svg>
+
+              <p className="text-[0.8rem] leading-relaxed text-[#5B6B7B]">{project.tagline}</p>
+
+              <div className="mt-auto flex items-center justify-between pt-2">
+                <span className="font-[family-name:var(--font-mono)] text-[0.62rem] font-semibold uppercase tracking-wide text-[#8A94A6]">
+                  Tap to flip page
+                </span>
+                <svg className="h-4 w-4 flex-shrink-0 text-[#5B6B7B] transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#0B1220]" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+            </div>
+          </button>
+
+          {/* BACK — case notes */}
+          <div className="flip-face flip-face-back glass-card flex w-full flex-col overflow-hidden rounded-[18px] border border-white/60 bg-white/85 p-5 text-left shadow-[0_10px_36px_-18px_rgba(15,23,42,0.3)] backdrop-blur-xl">
+            <div className="glow-border" style={{ ["--glow" as string]: a.fg }} />
+            <span className="chart-hole" style={{ top: "16%" }} />
+            <span className="chart-hole" style={{ top: "48%" }} />
+            <span className="chart-hole" style={{ top: "80%" }} />
+
+            <span className="mb-2 font-[family-name:var(--font-mono)] text-[0.62rem] font-bold uppercase tracking-[0.1em]" style={{ color: a.fg }}>
+              Case notes
+            </span>
+            <h3 className="font-[family-name:var(--font-display)] text-[1.05rem] font-bold leading-tight text-[#0B1220]">
+              {project.title}
+            </h3>
+
+            <svg className="my-3 h-3 w-full max-w-[110px]" viewBox="0 0 110 14" fill="none">
+              <path d="M0 7H26L31 2L36 12L41 7H110" stroke={a.fg} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.55" />
+            </svg>
+
+            {points.length > 0 && (
+              <ul className="mb-3 space-y-1.5">
+                {points.map((pt) => (
+                  <li key={pt} className="flex items-start gap-2 text-[0.78rem] leading-relaxed text-[#33414F]">
+                    <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full" style={{ background: a.bg }} />
+                    {pt}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <p className="mb-4 line-clamp-3 text-[0.78rem] leading-relaxed text-[#5B6B7B]">{project.description}</p>
+
+            <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setFlipped(false)}
+                className="rounded-full border border-[rgba(15,23,42,0.12)] px-3.5 py-2 font-[family-name:var(--font-mono)] text-[0.68rem] font-bold text-[#5B6B7B] transition-colors hover:border-[#2F6FED] hover:text-[#0B1220]"
+              >
+                ← Close file
+              </button>
+              <button
+                type="button"
+                onClick={() => onOpen(project)}
+                className="flex-1 rounded-full px-3.5 py-2 text-center font-[family-name:var(--font-mono)] text-[0.68rem] font-bold text-white transition-transform hover:-translate-y-0.5"
+                style={{ background: `linear-gradient(90deg, ${a.fg}, #14B981)` }}
+              >
+                Full case file →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1062,26 +1184,16 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openProject, setOpenProject] = useState<Project | null>(null);
-  const [filter, setFilter] = useState<"All" | Category>("All");
 
   const navRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const navListRef = useRef<HTMLUListElement>(null);
   const [underline, setUnderline] = useState({ left: 0, width: 0 });
 
-  const filterRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const filterListRef = useRef<HTMLDivElement>(null);
-  const projectsGridRef = useRef<HTMLDivElement>(null);
-  const [filterUnderline, setFilterUnderline] = useState({ left: 0, width: 0 });
 
   const { text: typedRole, blink } = useTypewriter(ROLES);
 
   const handleOpenProject = useCallback((p: Project) => setOpenProject(p), []);
   const handleCloseProject = useCallback(() => setOpenProject(null), []);
-
-  const visibleProjects = useMemo(
-    () => (filter === "All" ? PROJECTS : PROJECTS.filter((p) => p.category === filter)),
-    [filter]
-  );
 
   // Section-tracking observer + scroll listener — set up once.
   useEffect(() => {
@@ -1126,7 +1238,7 @@ export default function Home() {
     );
     revealEls.forEach((el) => revealObserver.observe(el));
     return () => revealObserver.disconnect();
-  }, [visibleProjects]);
+  }, []);
 
   useEffect(() => {
     const el = navRefs.current[activeSection];
@@ -1137,16 +1249,6 @@ export default function Home() {
       setUnderline({ left: elRect.left - parentRect.left, width: elRect.width });
     }
   }, [activeSection]);
-
-  useEffect(() => {
-    const el = filterRefs.current[filter];
-    const parent = filterListRef.current;
-    if (el && parent) {
-      const elRect = el.getBoundingClientRect();
-      const parentRect = parent.getBoundingClientRect();
-      setFilterUnderline({ left: elRect.left - parentRect.left, width: elRect.width });
-    }
-  }, [filter, visibleProjects.length]);
 
   const scrollToSection = (id: string) => {
     const target = document.getElementById(id);
@@ -1333,6 +1435,124 @@ export default function Home() {
           animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
         }
 
+        /* ---- Project "case file" page-turn effect ---- */
+        .flip-page-outer {
+          aspect-ratio: 3 / 4;
+        }
+        .flip-page-scene {
+          width: 100%;
+          height: 100%;
+          perspective: 2400px;
+        }
+        .flip-page-card {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          transform-style: preserve-3d;
+          transition: transform 0.85s cubic-bezier(0.45, 0.05, 0.15, 1);
+          transform-origin: left center;
+        }
+        .flip-page-card.is-flipped {
+          transform: rotateY(-178deg);
+        }
+        .flip-face {
+          position: absolute;
+          inset: 0;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+        }
+        .flip-face-front {
+          z-index: 2;
+        }
+        .flip-face-back {
+          transform: rotateY(180deg);
+        }
+        .page-curl {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 28px;
+          height: 28px;
+          background: linear-gradient(135deg, transparent 50%, rgba(15,23,42,0.12) 50.5%, rgba(15,23,42,0.05) 65%, transparent 68%);
+          border-bottom-left-radius: 10px;
+          pointer-events: none;
+          transition: width 0.25s ease, height 0.25s ease;
+          z-index: 3;
+        }
+        .flip-page-outer:hover .page-curl {
+          width: 40px;
+          height: 40px;
+        }
+        .chart-hole {
+          position: absolute;
+          left: 9px;
+          width: 6px;
+          height: 6px;
+          border-radius: 9999px;
+          background: rgba(15,23,42,0.09);
+          box-shadow: inset 0 1px 2px rgba(15,23,42,0.28);
+          z-index: 3;
+        }
+
+        /* ---- Bound project book with a physical page-turn ---- */
+        .project-book {
+          position: relative;
+          padding: 14px 12px 14px 28px;
+          border-radius: 8px;
+          background: linear-gradient(90deg, #08253f, #155a8b 8%, #e7eff6 8.4%, #f6fbff 100%);
+          box-shadow: 0 30px 65px -36px rgba(11,18,32,0.66), 0 14px 26px -20px rgba(47,111,237,0.45);
+        }
+        .project-book-spine {
+          position: absolute;
+          inset: 0 auto 0 0;
+          width: 31px;
+          border-radius: 8px 0 0 8px;
+          background: linear-gradient(90deg, #061b30, #145789 62%, #0b3359);
+          box-shadow: inset -2px 0 rgba(255,255,255,0.2), 3px 0 8px rgba(11,18,32,0.25);
+        }
+        .project-book-sheet {
+          position: relative;
+          min-height: 495px;
+          overflow: hidden;
+          border-radius: 3px 7px 7px 3px;
+          background: #fffefb;
+          box-shadow: -6px 0 13px rgba(11,18,32,0.18), inset 0 0 0 1px rgba(15,23,42,0.07);
+          perspective: 1800px;
+        }
+        .book-page-content {
+          min-height: 495px;
+          padding: 26px 30px;
+          background-color: #fffefb;
+          background-image: linear-gradient(rgba(47,111,237,0.05) 1px, transparent 1px);
+          background-size: 100% 31px;
+        }
+        .book-page-heading, .project-book-controls { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+        .book-page-body { display: grid; grid-template-columns: minmax(0,0.82fr) minmax(0,1.18fr); gap: 28px; padding-top: 25px; }
+        .book-page-image { align-self: start; overflow: hidden; border: 1px solid rgba(15,23,42,0.09); border-radius: 5px; box-shadow: 7px 8px 0 rgba(47,111,237,0.08); }
+        .book-page-image > div { border-bottom: 0; border-radius: 4px; }
+        .project-book-turn { position: absolute; inset: 0; z-index: 4; transform-style: preserve-3d; animation-duration: 0.82s; animation-timing-function: cubic-bezier(0.45,0.05,0.15,1); animation-fill-mode: forwards; }
+        .project-book-turn-next { transform-origin: left center; animation-name: turnBookPageNext; }
+        .project-book-turn-previous { transform-origin: right center; animation-name: turnBookPagePrevious; }
+        .project-book-turn-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+        .project-book-turn-front { box-shadow: 5px 0 14px rgba(11,18,32,0.2); }
+        .project-book-turn-back { transform: rotateY(180deg); box-shadow: -5px 0 14px rgba(11,18,32,0.2); }
+        .project-book-turn::after { position: absolute; inset: 0; pointer-events: none; content: ""; background: linear-gradient(90deg, rgba(11,18,32,0.12), transparent 26%, transparent 72%, rgba(11,18,32,0.1)); backface-visibility: hidden; }
+        .project-book-controls { min-height: 54px; padding: 13px 5px 0 2px; }
+        .project-book-control { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid rgba(15,23,42,0.14); border-radius: 50%; color: #33414f; background: rgba(255,255,255,0.74); transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+        .project-book-control svg { width: 16px; height: 16px; }
+        .project-book-control:hover { transform: translateY(-2px); border-color: #2f6fed; color: #2f6fed; }
+        .project-book-marker { width: 7px; height: 7px; border-radius: 50%; transition: width 0.2s ease; }
+        .project-book-marker[aria-current="page"] { width: 20px; border-radius: 999px; }
+        @keyframes turnBookPageNext { from { transform: rotateY(0); } 50% { transform: rotateY(-88deg); } to { transform: rotateY(-180deg); } }
+        @keyframes turnBookPagePrevious { from { transform: rotateY(0); } 50% { transform: rotateY(88deg); } to { transform: rotateY(180deg); } }
+        @media (max-width: 640px) {
+          .project-book { padding: 10px 8px 10px 20px; }
+          .project-book-spine { width: 22px; }
+          .project-book-sheet, .book-page-content { min-height: 0; }
+          .book-page-content { padding: 20px 18px; }
+          .book-page-body { grid-template-columns: 1fr; gap: 20px; padding-top: 20px; }
+        }
+
         .glass-card {
           transition: box-shadow 0.35s ease, border-color 0.35s ease;
         }
@@ -1377,7 +1597,8 @@ export default function Home() {
         @media (prefers-reduced-motion: reduce) {
           [data-reveal], [data-reveal-group] > *, .modal-overlay, .modal-panel,
           .blob, .particle, .hero-wave-bg, .flow-line, .flip-card-inner,
-          .spark-path, .skill-spark, .stamp, .record-page, .monitor-wave {
+          .spark-path, .skill-spark, .stamp, .record-page, .monitor-wave,
+          .flip-page-card {
             animation: none !important;
             transition: none !important;
             opacity: 1 !important;
@@ -1509,36 +1730,22 @@ export default function Home() {
       </section>
 
       {/* ---------------------------------------------------------------- */}
-      {/* PROJECTS                                                          */}
+      {/* PROJECTS — case-file binder, each card flips open like a chart   */}
+      {/* page: tap the cover to flip to case notes, then open the full    */}
+      {/* record for stack, links, and highlights.                        */}
       {/* ---------------------------------------------------------------- */}
       <section id="projects" className="relative w-full px-[5%] py-24 scroll-mt-20 md:px-[9%]">
         <div data-reveal className="mb-10 grid grid-cols-1 items-end gap-8 md:grid-cols-[1.3fr_0.7fr]">
           <div>
-            <span className="mb-2.5 block font-[family-name:var(--font-mono)] text-[0.72rem] font-bold uppercase tracking-[0.14em] text-[#2F6FED]">Selected Work</span>
+            <span className="mb-2.5 block font-[family-name:var(--font-mono)] text-[0.72rem] font-bold uppercase tracking-[0.14em] text-[#2F6FED]">Case Files</span>
             <h2 className="font-[family-name:var(--font-display)] text-3xl font-bold tracking-tight md:text-5xl">Recent builds.</h2>
-            <p className="mt-3 max-w-[54ch] text-[0.95rem] leading-relaxed text-[#5B6B7B]">Tap any card to open the full case — description, stack, and links to the code and live demo.</p>
+            <p className="mt-3 max-w-[54ch] text-[0.95rem] leading-relaxed text-[#5B6B7B]">
+              Tap a file to flip it open like a chart page, then open the full case record for stack details and links.
+            </p>
           </div>
         </div>
 
-        <div data-reveal ref={filterListRef} className="relative mb-10 inline-flex flex-wrap gap-1 rounded-full border border-[rgba(15,23,42,0.08)] bg-white/60 p-1.5 backdrop-blur-md">
-          <span className="filter-underline" style={{ left: filterUnderline.left, width: filterUnderline.width }} />
-          {(["All", ...CATEGORIES] as const).map((c) => (
-            <button
-              key={c}
-              ref={(el) => { filterRefs.current[c] = el; }}
-              onClick={() => setFilter(c)}
-              className={`relative z-10 rounded-full px-4 py-2 font-[family-name:var(--font-mono)] text-[0.72rem] font-bold uppercase tracking-wide transition-colors duration-300 ${filter === c ? "text-white" : "text-[#5B6B7B] hover:text-[#0B1220]"}`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-
-        <div ref={projectsGridRef} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {visibleProjects.map((p, i) => (
-            <ProjectCard key={p.id} project={p} onOpen={handleOpenProject} index={i} />
-          ))}
-        </div>
+        <ProjectBook projects={PROJECTS} onOpen={handleOpenProject} />
       </section>
 
       {/* ---------------------------------------------------------------- */}
